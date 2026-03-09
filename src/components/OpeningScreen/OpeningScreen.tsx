@@ -5,6 +5,7 @@ import { useJourney } from '../../context/useJourney';
 import { getMoodColor } from '../../utils/moodColors';
 import type { SegmentPreview } from '../../types/segments';
 import styles from './OpeningScreen.module.css';
+import Markdown from 'react-markdown';
 
 export function OpeningScreen() {
   const [segments, setSegments] = useState<SegmentPreview[]>([]);
@@ -30,7 +31,8 @@ export function OpeningScreen() {
       <div className={`${styles.header} ${visible ? styles.visible : ''}`}>
         <div className={styles.subtitle}>A literary journey</div>
         <h1 className={styles.title}>
-          Where will the words<br />
+          Where will the words
+          <br />
           <span className={styles.titleAccent}>take you?</span>
         </h1>
       </div>
@@ -57,8 +59,9 @@ export function OpeningScreen() {
               onMouseLeave={() => setHoveredId(null)}
             >
               <p className={styles.openingLine}>
-                &ldquo;{seg.opening_line}&rdquo;
+                <Markdown>{seg.opening_line}</Markdown>
               </p>
+
               <div
                 className={styles.lineDetail}
                 style={{ color: isHovered ? moodColor : undefined }}
