@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import Markdown from 'react-markdown';
 import { fetchSegment, fetchSimilarSegments } from '../../api/segments';
 import { useJourney } from '../../context/useJourney';
 import { getMoodColor } from '../../utils/moodColors';
@@ -40,14 +41,13 @@ export function ReadingScreen() {
     handleFetchSegment();
   }, [id]);
 
-  function handleReveal() {
+  async function handleReveal() {
     if (!segment) return;
     setPhase('revealing');
 
-    fetchSimilarSegments(segment.id, 3).then((options) => {
-      setNextOptions(options);
-      setPhase('choosing');
-    });
+    const options = await fetchSimilarSegments(segment.id, 3);
+    setNextOptions(options);
+    setPhase('choosing');
   }
 
   function handleNext(option: SimilarSegmentPreview) {
@@ -146,12 +146,12 @@ export function ReadingScreen() {
               {i === 0 ? (
                 <>
                   <span className={styles.dropCap} style={{ color: moodColor }}>
-                    {para[0]}
+                    <Markdown>{para[0]}</Markdown>
                   </span>
-                  {para.slice(1)}
+                  <Markdown>{para.slice(1)}</Markdown>
                 </>
               ) : (
-                para
+                <Markdown>{para}</Markdown>
               )}
             </p>
           ))}
