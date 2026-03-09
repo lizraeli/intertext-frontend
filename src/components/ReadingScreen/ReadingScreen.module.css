@@ -133,9 +133,10 @@
 }
 
 .paragraph {
-  font-family: 'Playfair Display', Georgia, serif;
-  font-size: clamp(17px, 2.2vw, 20px);
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: clamp(17px, 2.2vw, 24px);
   line-height: 1.8;
+  letter-spacing: 0.2px;
   color: var(--text);
   margin: 0 0 1.6em 0;
 }

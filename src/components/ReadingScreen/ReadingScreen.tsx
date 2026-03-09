@@ -213,7 +213,7 @@ export function ReadingScreen() {
                     }}
                   >
                     <p className={styles.nextOpeningLine}>
-                      &ldquo;{opt.opening_line}&rdquo;
+                      <Markdown>{opt.opening_line}</Markdown>
                     </p>
                     <div
                       className={styles.nextDetail}

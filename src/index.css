@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,200..900;1,200..900&display=swap');
 
 :root {
   --bg: #181512;
@@ -17,10 +17,11 @@
 
 body {
   background: var(--bg);
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-optical-sizing: auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-weight: 500;
+  font-weight: 400;
 }
 
 input::placeholder {
