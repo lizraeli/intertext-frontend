@@ -1,0 +1,109 @@
+.container {
+  min-height: 100vh;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 24px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 64px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 1s ease;
+}
+
+.header.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.subtitle {
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  color: var(--muted);
+  margin-bottom: 16px;
+  text-transform: uppercase;
+}
+
+.title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 400;
+  color: var(--cream);
+  line-height: 1.1;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.titleAccent {
+  font-style: italic;
+  color: var(--amber);
+}
+
+.prompt {
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 32px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 1s ease 0.2s;
+}
+
+.prompt.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.lines {
+  width: 100%;
+  max-width: 760px;
+  display: grid;
+  gap: 2px;
+}
+
+.lineItem {
+  padding: 20px 28px;
+  cursor: pointer;
+  border-left: 2px solid transparent;
+  background: transparent;
+  opacity: 0;
+  transform: translateX(-16px);
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.lineItem.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.lineItem:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.openingLine {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(16px, 2.5vw, 20px);
+  font-style: italic;
+  color: var(--text);
+  margin: 0 0 8px 0;
+  line-height: 1.4;
+  transition: color 0.2s;
+}
+
+.lineItem:hover .openingLine {
+  color: var(--cream);
+}
+
+.lineDetail {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--muted);
+  transition: color 0.2s;
+  text-transform: uppercase;
+}

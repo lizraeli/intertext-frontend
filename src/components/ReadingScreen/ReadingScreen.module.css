@@ -1,0 +1,256 @@
+.container {
+  min-height: 100vh;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Top bar */
+
+.topBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 40px;
+  border-bottom: 1px solid var(--border);
+  opacity: 0;
+  transition: opacity 0.8s ease 0.3s;
+}
+
+.topBar.visible {
+  opacity: 1;
+}
+
+.backButton {
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 13px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 0;
+  font-family: inherit;
+}
+
+.backButton:hover {
+  color: var(--text);
+}
+
+.trail {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.trailEntry {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.trailDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  transition: background 0.3s;
+}
+
+.trailLine {
+  width: 20px;
+  height: 1px;
+  background: var(--border);
+}
+
+.topBarSpacer {
+  width: 80px;
+}
+
+/* Main content */
+
+.content {
+  flex: 1;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 60px 40px;
+  width: 100%;
+}
+
+/* Novel info badge */
+
+.novelInfo {
+  margin-bottom: 40px;
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: all 0.6s ease;
+}
+
+.novelInfo.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+}
+
+.badgeMood {
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.badgeDot {
+  color: var(--border);
+}
+
+.badgeTitle {
+  font-size: 13px;
+  color: var(--muted);
+  font-style: italic;
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+.badgeAuthor {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* Text body */
+
+.textBody {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: all 0.9s ease 0.2s;
+}
+
+.textBody.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.paragraph {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(17px, 2.2vw, 20px);
+  line-height: 1.8;
+  color: var(--text);
+  margin: 0 0 1.6em 0;
+}
+
+.dropCap {
+  float: left;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 4.5em;
+  line-height: 0.75;
+  margin-right: 8px;
+  margin-top: 8px;
+}
+
+/* Themes */
+
+.themes {
+  margin-top: 48px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.themes.visible {
+  opacity: 1;
+}
+
+.themeTag {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  padding: 4px 10px;
+}
+
+/* Continue button */
+
+.ctaWrapper {
+  margin-top: 56px;
+  text-align: center;
+}
+
+.ctaButton {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text);
+  cursor: pointer;
+  padding: 14px 36px;
+  font-size: 13px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+/* Where next section */
+
+.nextSection {
+  margin-top: 64px;
+  border-top: 1px solid var(--border);
+  padding-top: 48px;
+}
+
+.nextHeading {
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 32px;
+}
+
+.nextOptions {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.nextItem {
+  padding: 20px 24px;
+  cursor: pointer;
+  border-left: 2px solid transparent;
+  transition: all 0.2s;
+  opacity: 0;
+  animation: fadeSlideIn 0.5s ease forwards;
+}
+
+.nextItem:hover {
+  border-left-color: var(--amber);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.nextOpeningLine {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 18px;
+  font-style: italic;
+  color: var(--text);
+  margin: 0 0 8px 0;
+  line-height: 1.4;
+}
+
+.nextDetail {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
