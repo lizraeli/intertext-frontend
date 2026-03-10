@@ -29,7 +29,7 @@ export function OpeningScreen() {
   return (
     <div className={styles.container}>
       <div className={`${styles.header} ${visible ? styles.visible : ''}`}>
-        <div className={styles.subtitle}>A literary journey</div>
+        <div className={styles.subtitle}>A literary exploration</div>
         <h1 className={styles.title}>
           Where will the words
           <br />

@@ -30,4 +30,6 @@ export interface FullSegment {
   mood: string;
   themes: ThemeAnnotation[];
   setting: string;
+  prev_segment_id: number | null;
+  next_segment_id: number | null;
 }

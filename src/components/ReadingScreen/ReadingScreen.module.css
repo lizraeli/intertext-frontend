@@ -8,17 +8,29 @@
 /* Top bar */
 
 .topBar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 24px 40px;
   border-bottom: 1px solid var(--border);
+  background: var(--bg);
   opacity: 0;
-  transition: opacity 0.8s ease 0.3s;
+  transition:
+    opacity 0.8s ease 0.3s,
+    padding 0.25s ease;
 }
 
 .topBar.visible {
   opacity: 1;
+}
+
+.topBar.compact {
+  padding: 10px 40px;
+  border-bottom: none;
+  box-shadow: 0 0.5px 4px rgba(255, 255, 255, 0.08);
 }
 
 .backButton {
@@ -159,10 +171,12 @@
   flex-wrap: wrap;
   opacity: 0;
   transition: opacity 0.5s ease;
+  display: none;
 }
 
 .themes.visible {
   opacity: 1;
+  display: flex;
 }
 
 .themeTag {
@@ -172,6 +186,37 @@
   color: var(--muted);
   border: 1px solid var(--border);
   padding: 4px 10px;
+}
+
+/* Sequential nav (prev/next in same novel) – in top bar */
+
+.seqNav {
+  display: flex;
+  justify-content: flex-end;
+  gap: 24px;
+  align-items: center;
+}
+
+.seqNavLink {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-family: inherit;
+  cursor: pointer;
+  padding: 8px 0;
+  transition: color 0.2s;
+}
+
+.seqNavLink:hover:not(:disabled) {
+  color: var(--text);
+}
+
+.seqNavLink:disabled {
+  opacity: 0.35;
+  cursor: default;
 }
 
 /* Continue button */
@@ -186,12 +231,53 @@
   border: 1px solid var(--border);
   color: var(--text);
   cursor: pointer;
-  padding: 14px 36px;
-  font-size: 13px;
+  padding: 18px 36px;
+  font-size: 16px;
   letter-spacing: 0.25em;
   text-transform: uppercase;
   font-family: inherit;
   transition: all 0.2s;
+}
+
+/* Loading state (revealing phase) */
+.ctaLoading {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 1px solid var(--border);
+  padding: 18px 36px;
+  min-width: 200px;
+}
+
+.ctaLoadingDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  color: var(--muted);
+  animation: ctaLoadingBounce 0.6s ease-in-out infinite both;
+}
+
+.ctaLoadingDot:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.ctaLoadingDot:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+@keyframes ctaLoadingBounce {
+  0%,
+  80%,
+  100% {
+    transform: scale(0.6);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 /* Where next section */
