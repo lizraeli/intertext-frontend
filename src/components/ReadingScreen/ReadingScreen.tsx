@@ -143,30 +143,7 @@ export function ReadingScreen() {
           ))}
         </div>
 
-        {segment.prev_segment_id != null || segment.next_segment_id != null ? (
-          <div className={styles.seqNav}>
-            <button
-              type="button"
-              className={styles.seqNavLink}
-              disabled={segment.prev_segment_id == null}
-              onClick={handlePrevSegment}
-              aria-label="Previous segment"
-            >
-              ← Prev
-            </button>
-            <button
-              type="button"
-              className={styles.seqNavLink}
-              disabled={segment.next_segment_id == null}
-              onClick={handleNextSegment}
-              aria-label="Next segment"
-            >
-              Next →
-            </button>
-          </div>
-        ) : (
-          <div className={styles.topBarSpacer} />
-        )}
+        <div className={styles.topBarSpacer} />
       </div>
 
       {/* Main content */}
@@ -183,7 +160,7 @@ export function ReadingScreen() {
             }}
           >
             <span className={styles.badgeMood} style={{ color: moodColor }}>
-              {segment.mood}
+              {segment.chapter_title}
             </span>
             <span className={styles.badgeDot}>·</span>
             <span className={styles.badgeTitle}>{segment.novel_title}</span>
@@ -214,16 +191,25 @@ export function ReadingScreen() {
           ))}
         </div>
 
-        {/* Theme tags */}
-        <div
-          className={`${styles.themes} ${phase === 'choosing' ? styles.visible : ''}`}
-        >
-          {segment.themes.map((theme) => (
-            <span key={theme.name} className={styles.themeTag}>
-              {theme.name}
-            </span>
-          ))}
-          <span className={styles.themeTag}>{segment.setting}</span>
+        <div className={styles.seqNav}>
+          <button
+            type="button"
+            className={styles.seqNavLink}
+            disabled={segment.prev_segment_id == null}
+            onClick={handlePrevSegment}
+            aria-label="Previous segment"
+          >
+            ← Prev
+          </button>
+          <button
+            type="button"
+            className={styles.seqNavLink}
+            disabled={segment.next_segment_id == null}
+            onClick={handleNextSegment}
+            aria-label="Next segment"
+          >
+            Next →
+          </button>
         </div>
 
         {/* Explore similar / loading */}

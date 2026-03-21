@@ -29,7 +29,10 @@ export interface FullSegment {
   year: number | null;
   mood: string;
   themes: ThemeAnnotation[];
-  setting: string;
+  place: string;
+  characters: string[];
+  chapter_id: number;
+  chapter_title: string;
   prev_segment_id: number | null;
   next_segment_id: number | null;
 }

@@ -192,9 +192,9 @@
 
 .seqNav {
   display: flex;
-  justify-content: flex-end;
   gap: 24px;
   align-items: center;
+  justify-content: center;
 }
 
 .seqNavLink {
