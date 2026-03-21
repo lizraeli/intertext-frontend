@@ -35,4 +35,6 @@ export interface FullSegment {
   chapter_title: string;
   prev_segment_id: number | null;
   next_segment_id: number | null;
+  segment_index: number;
+  chapter_segment_count: number;
 }
