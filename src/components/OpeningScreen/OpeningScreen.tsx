@@ -19,7 +19,7 @@ export function OpeningScreen() {
   }, []);
 
   function handleSelect(segment: SegmentPreview) {
-    navigate(`/segment/${segment.id}`);
+    navigate(`/segment/${segment.id}`, { state: { fromExplore: true } });
   }
 
   return (

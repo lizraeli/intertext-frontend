@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import Markdown from 'react-markdown';
 import { fetchSegment, fetchSimilarSegments } from '../../api/segments';
 import { getMoodColor } from '../../utils/moodColors';
@@ -11,6 +11,10 @@ type Phase = 'entering' | 'reading' | 'revealing' | 'choosing';
 export function ReadingScreen() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const fromNovel = (location.state as { fromNovel?: number } | null)?.fromNovel;
+  const fromExplore = (location.state as { fromExplore?: boolean } | null)?.fromExplore;
 
   const [segment, setSegment] = useState<FullSegment | null>(null);
   const [phase, setPhase] = useState<Phase>('entering');
@@ -67,24 +71,37 @@ export function ReadingScreen() {
   }
 
   function handleNext(option: SimilarSegmentPreview) {
-    navigate(`/segment/${option.id}`);
+    navigate(`/segment/${option.id}`, { state: { fromExplore: true } });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   function handlePrevSegment() {
     if (!segment?.prev_segment_id) return;
-    navigate(`/segment/${segment.prev_segment_id}`);
+    navigate(`/segment/${segment.prev_segment_id}`, { state: location.state });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   function handleNextSegment() {
     if (!segment?.next_segment_id) return;
-    navigate(`/segment/${segment.next_segment_id}`);
+    navigate(`/segment/${segment.next_segment_id}`, { state: location.state });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  function getBackTarget(): { path: string; label: string } {
+    if (fromExplore) {
+      return { path: '/explore', label: '← Begin again' };
+    }
+    if (fromNovel) {
+      return { path: `/novel/${fromNovel}`, label: `← ${segment?.novel_title ?? 'Back'}` };
+    }
+    if (segment) {
+      return { path: `/novel/${segment.novel_id}`, label: `← ${segment.novel_title}` };
+    }
+    return { path: '/', label: '← Home' };
+  }
+
   function handleBack() {
-    navigate('/');
+    navigate(getBackTarget().path);
   }
 
   if (error) {
@@ -97,10 +114,10 @@ export function ReadingScreen() {
           <p className={styles.paragraph}>Segment not found.</p>
           <button
             className={styles.backButton}
-            onClick={handleBack}
+            onClick={() => navigate('/')}
             style={{ marginTop: '24px' }}
           >
-            ← Begin again
+            ← Home
           </button>
         </div>
       </div>
@@ -119,7 +136,7 @@ export function ReadingScreen() {
         className={`${styles.topBar} ${isVisible ? styles.visible : ''} ${scrolled ? styles.compact : ''}`}
       >
         <button className={styles.backButton} onClick={handleBack}>
-          ← Begin again
+          {getBackTarget().label}
         </button>
 
         <div className={styles.topBarSpacer} />
