@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchRandomSegments } from '../../api/segments';
-import { useJourney } from '../../context/useJourney';
 import { getMoodColor } from '../../utils/moodColors';
 import type { SegmentPreview } from '../../types/segments';
 import styles from './OpeningScreen.module.css';
@@ -12,7 +11,6 @@ export function OpeningScreen() {
   const [visible, setVisible] = useState(false);
   const [hoveredId, setHoveredId] = useState<number | null>(null);
   const navigate = useNavigate();
-  const { resetTrail, addToTrail } = useJourney();
 
   useEffect(() => {
     fetchRandomSegments(5).then(setSegments);
@@ -21,8 +19,6 @@ export function OpeningScreen() {
   }, []);
 
   function handleSelect(segment: SegmentPreview) {
-    resetTrail();
-    addToTrail(segment.id, segment.mood);
     navigate(`/segment/${segment.id}`);
   }
 

@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Markdown from 'react-markdown';
 import { fetchSegment, fetchSimilarSegments } from '../../api/segments';
-import { useJourney } from '../../context/useJourney';
 import { getMoodColor } from '../../utils/moodColors';
 import type { FullSegment, SimilarSegmentPreview } from '../../types/segments';
 import styles from './ReadingScreen.module.css';
@@ -12,7 +11,6 @@ type Phase = 'entering' | 'reading' | 'revealing' | 'choosing';
 export function ReadingScreen() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { trail, addToTrail, resetTrail } = useJourney();
 
   const [segment, setSegment] = useState<FullSegment | null>(null);
   const [phase, setPhase] = useState<Phase>('entering');
@@ -69,27 +67,23 @@ export function ReadingScreen() {
   }
 
   function handleNext(option: SimilarSegmentPreview) {
-    addToTrail(option.id, option.mood);
     navigate(`/segment/${option.id}`);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   function handlePrevSegment() {
     if (!segment?.prev_segment_id) return;
-    addToTrail(segment.prev_segment_id, segment.mood);
     navigate(`/segment/${segment.prev_segment_id}`);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   function handleNextSegment() {
     if (!segment?.next_segment_id) return;
-    addToTrail(segment.next_segment_id, segment.mood);
     navigate(`/segment/${segment.next_segment_id}`);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   function handleBack() {
-    resetTrail();
     navigate('/');
   }
 
@@ -127,21 +121,6 @@ export function ReadingScreen() {
         <button className={styles.backButton} onClick={handleBack}>
           ← Begin again
         </button>
-
-        <div className={styles.trail}>
-          {trail.map((_entry, i) => (
-            <div key={i} className={styles.trailEntry}>
-              <div
-                className={styles.trailDot}
-                style={{
-                  background:
-                    i === trail.length - 1 ? moodColor : 'var(--muted)',
-                }}
-              />
-              {i < trail.length - 1 && <div className={styles.trailLine} />}
-            </div>
-          ))}
-        </div>
 
         <div className={styles.topBarSpacer} />
       </div>
