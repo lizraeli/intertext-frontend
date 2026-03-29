@@ -4,6 +4,7 @@ import Markdown from 'react-markdown';
 import { fetchSegment, fetchSimilarSegments } from '../../api/segments';
 import { getMoodColor } from '../../utils/moodColors';
 import type { FullSegment, SimilarSegmentPreview } from '../../types/segments';
+import { LoadingIndicator } from '../LoadingIndicator/LoadingIndicator';
 import styles from './ReadingScreen.module.css';
 
 type Phase = 'entering' | 'reading' | 'revealing' | 'choosing';
@@ -124,7 +125,7 @@ export function ReadingScreen() {
     );
   }
 
-  if (!segment) return null;
+  if (!segment) return <LoadingIndicator />;
 
   const moodColor = getMoodColor(segment.mood);
   const isVisible = phase !== 'entering';

@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Markdown from 'react-markdown';
 import { fetchNovelChapters } from '../../api/segments';
 import type { NovelChaptersResponse } from '../../types/segments';
+import { LoadingIndicator } from '../LoadingIndicator/LoadingIndicator';
 import styles from './NovelScreen.module.css';
 
 export function NovelScreen() {
@@ -34,19 +35,7 @@ export function NovelScreen() {
     );
   }
 
-  if (!data) {
-    return (
-      <div className={styles.container}>
-        <div className={styles.loadingContent}>
-          <div className={styles.loadingDots}>
-            <span className={styles.loadingDot} />
-            <span className={styles.loadingDot} />
-            <span className={styles.loadingDot} />
-          </div>
-        </div>
-      </div>
-    );
-  }
+  if (!data) return <LoadingIndicator />;
 
   return (
     <div className={styles.container}>
