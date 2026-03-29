@@ -55,7 +55,8 @@ export function NovelScreen() {
         </div>
 
         <div className={`${styles.prompt} ${visible ? styles.visible : ''}`}>
-          {data.chapters.length} {data.chapters.length === 1 ? 'chapter' : 'chapters'}
+          {data.chapters.length}{' '}
+          {data.chapters.length === 1 ? 'chapter' : 'chapters'}
         </div>
 
         <div className={styles.chapters}>
@@ -85,7 +86,11 @@ export function NovelScreen() {
               {chapter.places.length > 0 && (
                 <div className={styles.chapterMeta}>
                   <span className={styles.metaPlaces}>
-                    {chapter.places.join(', ')}
+                    {chapter.places.map((place) => (
+                      <div key={place} className={styles.metaPlace}>
+                        {place}
+                      </div>
+                    ))}
                   </span>
                 </div>
               )}

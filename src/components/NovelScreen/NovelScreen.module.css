@@ -155,7 +155,16 @@
 }
 
 .metaPlaces {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.metaPlace {
   font-style: italic;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 4px 4px;
+  border-radius: 4px;
 }
 
 .errorContent {
@@ -171,4 +180,3 @@
   color: var(--text);
   font-size: 18px;
 }
-

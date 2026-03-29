@@ -1,5 +1,10 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import {
+  useParams,
+  useNavigate,
+  useLocation,
+  useViewTransitionState,
+} from 'react-router-dom';
 import Markdown from 'react-markdown';
 import { fetchSegment, fetchSimilarSegments } from '../../api/segments';
 import { getMoodColor } from '../../utils/moodColors';
@@ -13,9 +18,15 @@ export function ReadingScreen() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const location = useLocation();
+  const isTransitioning = useViewTransitionState(`/segment/${id}`);
+  useEffect(() => {
+    console.log('isTransitioning', isTransitioning);
+  }, [isTransitioning]);
 
-  const fromNovel = (location.state as { fromNovel?: number } | null)?.fromNovel;
-  const fromExplore = (location.state as { fromExplore?: boolean } | null)?.fromExplore;
+  const fromNovel = (location.state as { fromNovel?: number } | null)
+    ?.fromNovel;
+  const fromExplore = (location.state as { fromExplore?: boolean } | null)
+    ?.fromExplore;
 
   const [segment, setSegment] = useState<FullSegment | null>(null);
   const [phase, setPhase] = useState<Phase>('entering');
@@ -84,7 +95,10 @@ export function ReadingScreen() {
 
   function handleNextSegment() {
     if (!segment?.next_segment_id) return;
-    navigate(`/segment/${segment.next_segment_id}`, { state: location.state });
+    navigate(`/segment/${segment.next_segment_id}`, {
+      state: location.state,
+      viewTransition: true,
+    });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -93,10 +107,16 @@ export function ReadingScreen() {
       return { path: '/explore', label: '← Begin again' };
     }
     if (fromNovel) {
-      return { path: `/novel/${fromNovel}`, label: `← ${segment?.novel_title ?? 'Back'}` };
+      return {
+        path: `/novel/${fromNovel}`,
+        label: `← ${segment?.novel_title ?? 'Back'}`,
+      };
     }
     if (segment) {
-      return { path: `/novel/${segment.novel_id}`, label: `← ${segment.novel_title}` };
+      return {
+        path: `/novel/${segment.novel_id}`,
+        label: `← ${segment.novel_title}`,
+      };
     }
     return { path: '/', label: '← Home' };
   }
@@ -254,7 +274,7 @@ export function ReadingScreen() {
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.borderColor = 'var(--border)';
-                  e.currentTarget.style.color = 'var(--text)';
+                  e.currentTarget.style.color = 'var(--muted)';
                 }}
               >
                 Explore similar passages
@@ -296,9 +316,9 @@ export function ReadingScreen() {
                       e.currentTarget.style.background = 'transparent';
                     }}
                   >
-                    <p className={styles.nextOpeningLine}>
+                    <div className={styles.nextOdiveningLine}>
                       <Markdown>{opt.opening_line}</Markdown>
-                    </p>
+                    </div>
                     <div
                       className={styles.nextDetail}
                       style={{ color: optMoodColor }}
