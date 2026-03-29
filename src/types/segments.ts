@@ -11,7 +11,6 @@ export interface ChapterDetail {
   block_index: number;
   opening_line: string;
   first_segment_id: number | null;
-  characters: string[];
   places: string[];
 }
 
