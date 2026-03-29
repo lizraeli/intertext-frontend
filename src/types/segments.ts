@@ -1,3 +1,26 @@
+export interface NovelSummary {
+  id: number;
+  title: string;
+  author: string;
+  publication_year: number | null;
+}
+
+export interface ChapterDetail {
+  id: number;
+  title: string;
+  block_index: number;
+  opening_line: string;
+  first_segment_id: number | null;
+  places: string[];
+}
+
+export interface NovelChaptersResponse {
+  novel_title: string;
+  author: string;
+  publication_year: number | null;
+  chapters: ChapterDetail[];
+}
+
 export interface ThemeAnnotation {
   name: string;
   intensity: number;

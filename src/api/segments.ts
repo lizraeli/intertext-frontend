@@ -1,10 +1,30 @@
 import type {
+  NovelSummary,
+  NovelChaptersResponse,
   SegmentPreview,
   SimilarSegmentPreview,
   FullSegment,
 } from '../types/segments';
 
 const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8000';
+
+export async function fetchNovels(): Promise<NovelSummary[]> {
+  const response = await fetch(`${API_URL}/api/novels`);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch novels: ${response.status}`);
+  }
+  return response.json();
+}
+
+export async function fetchNovelChapters(
+  novelId: number,
+): Promise<NovelChaptersResponse> {
+  const response = await fetch(`${API_URL}/api/novels/${novelId}/chapters`);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch chapters for novel ${novelId}: ${response.status}`);
+  }
+  return response.json();
+}
 
 export async function fetchRandomSegments(
   count: number = 5,
