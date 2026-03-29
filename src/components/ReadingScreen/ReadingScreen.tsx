@@ -1,10 +1,5 @@
 import { useState, useEffect } from 'react';
-import {
-  useParams,
-  useNavigate,
-  useLocation,
-  useViewTransitionState,
-} from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import Markdown from 'react-markdown';
 import { fetchSegment, fetchSimilarSegments } from '../../api/segments';
 import { getMoodColor } from '../../utils/moodColors';
@@ -18,10 +13,6 @@ export function ReadingScreen() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const location = useLocation();
-  const isTransitioning = useViewTransitionState(`/segment/${id}`);
-  useEffect(() => {
-    console.log('isTransitioning', isTransitioning);
-  }, [isTransitioning]);
 
   const fromNovel = (location.state as { fromNovel?: number } | null)
     ?.fromNovel;
@@ -46,6 +37,7 @@ export function ReadingScreen() {
     }
     window.addEventListener('scroll', onScroll, { passive: true });
     checkScroll();
+
     return () => {
       window.removeEventListener('scroll', onScroll);
       cancelAnimationFrame(rafId);
@@ -89,7 +81,10 @@ export function ReadingScreen() {
 
   function handlePrevSegment() {
     if (!segment?.prev_segment_id) return;
-    navigate(`/segment/${segment.prev_segment_id}`, { state: location.state });
+    navigate(`/segment/${segment.prev_segment_id}`, {
+      state: location.state,
+      viewTransition: true,
+    });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -106,23 +101,26 @@ export function ReadingScreen() {
     if (fromExplore) {
       return { path: '/explore', label: '← Begin again' };
     }
+
     if (fromNovel) {
       return {
         path: `/novel/${fromNovel}`,
         label: `← ${segment?.novel_title ?? 'Back'}`,
       };
     }
+
     if (segment) {
       return {
         path: `/novel/${segment.novel_id}`,
         label: `← ${segment.novel_title}`,
       };
     }
+
     return { path: '/', label: '← Home' };
   }
 
   function handleBack() {
-    navigate(getBackTarget().path);
+    navigate(getBackTarget().path, { viewTransition: true });
   }
 
   if (error) {
@@ -208,7 +206,7 @@ export function ReadingScreen() {
           className={`${styles.textBody} ${isVisible ? styles.visible : ''}`}
         >
           {segment.content.split('\n\n').map((para, i) => (
-            <p key={i} className={styles.paragraph}>
+            <div key={i} className={styles.paragraph}>
               {i === 0 ? (
                 <>
                   <span className={styles.dropCap} style={{ color: moodColor }}>
@@ -219,7 +217,7 @@ export function ReadingScreen() {
               ) : (
                 <Markdown>{para}</Markdown>
               )}
-            </p>
+            </div>
           ))}
         </div>
 
@@ -295,15 +293,17 @@ export function ReadingScreen() {
 
         {/* Where next? options */}
         {phase === 'choosing' && (
-          <div className={styles.nextSection}>
-            <div className={styles.nextHeading}>Similar passages</div>
-            <div className={styles.nextOptions}>
+          <div className={styles.similarPassagesSection}>
+            <div className={styles.similarPassagesHeading}>
+              Similar passages
+            </div>
+            <div className={styles.similarPassagesOptions}>
               {nextOptions.map((opt, i) => {
                 const optMoodColor = getMoodColor(opt.mood);
                 return (
                   <div
                     key={opt.id}
-                    className={styles.nextItem}
+                    className={styles.similarPassage}
                     style={{ animationDelay: `${i * 0.12}s` }}
                     onClick={() => handleNext(opt)}
                     onMouseEnter={(e) => {
@@ -316,11 +316,11 @@ export function ReadingScreen() {
                       e.currentTarget.style.background = 'transparent';
                     }}
                   >
-                    <div className={styles.nextOdiveningLine}>
+                    <div className={styles.similarPassageOpeningLine}>
                       <Markdown>{opt.opening_line}</Markdown>
                     </div>
                     <div
-                      className={styles.nextDetail}
+                      className={styles.similarPassageDetail}
                       style={{ color: optMoodColor }}
                     >
                       {opt.mood} · {opt.novel_title} · {opt.author}

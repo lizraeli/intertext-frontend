@@ -15,11 +15,18 @@ export function NovelScreen() {
 
   useEffect(() => {
     if (!id) return;
-    fetchNovelChapters(Number(id))
-      .then(setData)
-      .catch(() => setError(true));
-    const timer = setTimeout(() => setVisible(true), 100);
-    return () => clearTimeout(timer);
+
+    async function handleFetchNovelChapters() {
+      try {
+        const data = await fetchNovelChapters(Number(id));
+        setData(data);
+        setTimeout(() => setVisible(true), 100);
+      } catch {
+        setError(true);
+      }
+    }
+
+    handleFetchNovelChapters();
   }, [id]);
 
   if (error) {
@@ -71,6 +78,7 @@ export function NovelScreen() {
                 if (chapter.first_segment_id != null) {
                   navigate(`/segment/${chapter.first_segment_id}`, {
                     state: { fromNovel: Number(id) },
+                    viewTransition: true,
                   });
                 }
               }}

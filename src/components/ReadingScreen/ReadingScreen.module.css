@@ -335,15 +335,14 @@
   }
 }
 
-/* Where next section */
+/* Similar passages section */
 
-.nextSection {
+.similarPassagesSection {
   margin-top: 64px;
-  border-top: 1px solid var(--border);
   padding-top: 48px;
 }
 
-.nextHeading {
+.similarPassagesHeading {
   font-size: 11px;
   letter-spacing: 0.3em;
   color: var(--muted);
@@ -351,7 +350,7 @@
   margin-bottom: 32px;
 }
 
-.nextOptions {
+.similarPassagesOptions {
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -368,7 +367,7 @@
   }
 }
 
-.nextItem {
+.similarPassage {
   padding: 20px 24px;
   cursor: pointer;
   border-left: 2px solid transparent;
@@ -377,12 +376,12 @@
   animation: fadeSlideIn 0.5s ease forwards;
 }
 
-.nextItem:hover {
+.similarPassage:hover {
   border-left-color: var(--amber);
   background: rgba(255, 255, 255, 0.03);
 }
 
-.nextOpeningLine {
+.similarPassageOpeningLine {
   font-family: 'Playfair Display', Georgia, serif;
   font-size: 18px;
   font-style: italic;
@@ -391,7 +390,7 @@
   line-height: 1.4;
 }
 
-.nextDetail {
+.similarPassageDetail {
   font-size: 11px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
