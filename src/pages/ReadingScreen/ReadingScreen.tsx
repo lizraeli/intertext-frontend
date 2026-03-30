@@ -207,16 +207,7 @@ export function ReadingScreen() {
         >
           {segment.content.split('\n\n').map((para, i) => (
             <div key={i} className={styles.paragraph}>
-              {i === 0 ? (
-                <>
-                  <span className={styles.dropCap} style={{ color: moodColor }}>
-                    <Markdown>{para[0]}</Markdown>
-                  </span>
-                  <Markdown>{para.slice(1)}</Markdown>
-                </>
-              ) : (
-                <Markdown>{para}</Markdown>
-              )}
+              <Markdown>{para}</Markdown>
             </div>
           ))}
         </div>
