@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Markdown from 'react-markdown';
 import { fetchNovelChapters } from '../../api/segments';
 import type { NovelChaptersResponse } from '../../types/segments';
-import { LoadingIndicator } from '../LoadingIndicator/LoadingIndicator';
+import { LoadingIndicator } from '../../components/LoadingIndicator/LoadingIndicator';
 import styles from './NovelScreen.module.css';
 
 export function NovelScreen() {

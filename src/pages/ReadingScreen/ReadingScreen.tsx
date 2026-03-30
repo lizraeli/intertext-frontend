@@ -4,7 +4,7 @@ import Markdown from 'react-markdown';
 import { fetchSegment, fetchSimilarSegments } from '../../api/segments';
 import { getMoodColor } from '../../utils/moodColors';
 import type { FullSegment, SimilarSegmentPreview } from '../../types/segments';
-import { LoadingIndicator } from '../LoadingIndicator/LoadingIndicator';
+import { LoadingIndicator } from '../../components/LoadingIndicator/LoadingIndicator';
 import styles from './ReadingScreen.module.css';
 
 type Phase = 'entering' | 'reading' | 'revealing' | 'choosing';

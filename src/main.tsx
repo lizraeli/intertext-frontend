@@ -2,10 +2,10 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import RootLayout from './App';
-import { HomePage } from './components/HomePage/HomePage';
-import { OpeningScreen } from './components/OpeningScreen/OpeningScreen';
-import { NovelScreen } from './components/NovelScreen/NovelScreen';
-import { ReadingScreen } from './components/ReadingScreen/ReadingScreen';
+import { HomePage } from './pages/HomePage/HomePage';
+import { OpeningScreen } from './pages/OpeningScreen/OpeningScreen';
+import { NovelScreen } from './pages/NovelScreen/NovelScreen';
+import { ReadingScreen } from './pages/ReadingScreen/ReadingScreen';
 import './index.css';
 
 const router = createBrowserRouter([
