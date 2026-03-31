@@ -36,6 +36,7 @@ export function ReadingScreen() {
   const [error, setError] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [onShelf, setOnShelf] = useState(false);
+  const [hasLoaded, setHasLoaded] = useState(false);
 
   const scrollThreshold = 60;
 
@@ -57,6 +58,8 @@ export function ReadingScreen() {
   }, []);
 
   useEffect(() => {
+    let timeoutId: ReturnType<typeof setTimeout>;
+
     async function handleFetchSegment() {
       if (!id) {
         return;
@@ -71,14 +74,22 @@ export function ReadingScreen() {
         setSegment(data);
         setOnShelf(isOnShelf(data.novel_id));
         updateShelfProgress(data);
-        setTimeout(() => setPhase('reading'), 600);
+
+        if (!hasLoaded) {
+          timeoutId = setTimeout(() => setPhase('reading'), 100);
+          setHasLoaded(true);
+        } else {
+          setPhase('reading');
+        }
       } catch {
         setError(true);
       }
     }
 
     handleFetchSegment();
-  }, [id]);
+
+    return () => clearTimeout(timeoutId);
+  }, [id, hasLoaded]);
 
   async function handleReveal() {
     if (!segment) return;
@@ -89,30 +100,43 @@ export function ReadingScreen() {
   }
 
   function scrollToTop() {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: 'instant' });
   }
 
-  function navigateToSegmentById(
-    targetSegmentId: number,
-    state: ReadingLocationState,
-    viewTransition = false,
-  ) {
-    navigate(`/segment/${targetSegmentId}`, { state, viewTransition });
+  function navigateToSegment(params: {
+    id: number;
+    state?: ReadingLocationState;
+    viewTransition?: boolean;
+  }) {
+    navigate(`/segment/${params.id}`, {
+      state: params.state,
+      viewTransition: params.viewTransition,
+    });
     scrollToTop();
   }
 
   function navigateToSimilarSegment(option: SimilarSegmentPreview) {
-    navigateToSegmentById(option.id, { fromExplore: true });
+    navigateToSegment({
+      id: option.id,
+      state: { fromExplore: true },
+    });
   }
 
   function navigateToPreviousSegment() {
     if (!segment?.prev_segment_id) return;
-    navigateToSegmentById(segment.prev_segment_id, routeState, true);
+    navigateToSegment({
+      id: segment.prev_segment_id,
+      state: routeState,
+      viewTransition: true,
+    });
   }
 
   function navigateToNextSegment() {
     if (!segment?.next_segment_id) return;
-    navigateToSegmentById(segment.next_segment_id, routeState, true);
+    navigateToSegment({
+      id: segment.next_segment_id,
+      state: routeState,
+    });
   }
 
   function toggleShelf() {
@@ -159,7 +183,7 @@ export function ReadingScreen() {
   return (
     <div className={styles.container}>
       <TopBar
-        isVisible={isVisible}
+        isVisible={isVisible || hasLoaded}
         scrolled={scrolled}
         backLabel={backTarget.label}
         onNavigateBack={navigateToBackTarget}
@@ -172,11 +196,12 @@ export function ReadingScreen() {
         <NovelInfoBadge
           segment={segment}
           moodColor={moodColor}
-          isVisible={isVisible}
+          isVisible={isVisible || hasLoaded}
         />
 
         {/* Text body */}
         <div
+          key={segment.id}
           className={`${styles.textBody} ${isVisible ? styles.visible : ''}`}
         >
           {segment.content.split('\n\n').map((para, i) => (
