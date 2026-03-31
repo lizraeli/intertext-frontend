@@ -285,6 +285,7 @@
 }
 
 .ctaButton {
+  --accent: var(--amber);
   background: none;
   border: 1px solid var(--border);
   color: var(--muted);
@@ -295,6 +296,11 @@
   text-transform: uppercase;
   font-family: inherit;
   transition: all 0.2s;
+}
+
+.ctaButton:hover {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 /* Loading state (revealing phase) */
@@ -380,7 +386,7 @@
 }
 
 .similarPassage:hover {
-  border-left-color: var(--amber);
+  border-left-color: var(--accent, var(--amber));
   background: rgba(255, 255, 255, 0.03);
 }
 
@@ -394,6 +400,7 @@
 }
 
 .similarPassageDetail {
+  color: var(--accent, var(--muted));
   font-size: 11px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
