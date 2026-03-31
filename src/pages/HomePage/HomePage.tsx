@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchNovels } from '../../api/segments';
 import type { NovelSummary } from '../../types/segments';
+import MyShelf from './components/MyShelf';
 import styles from './HomePage.module.css';
 
 export function HomePage() {
@@ -24,8 +25,10 @@ export function HomePage() {
         </h1>
       </div>
 
+      <MyShelf visible={visible} />
+
       <div className={`${styles.prompt} ${visible ? styles.visible : ''}`}>
-        Choose a book
+        Available Books
       </div>
 
       <div className={styles.list}>
@@ -47,9 +50,7 @@ export function HomePage() {
         ))}
       </div>
 
-      <div
-        className={`${styles.exploreLink} ${visible ? styles.visible : ''}`}
-      >
+      <div className={`${styles.exploreLink} ${visible ? styles.visible : ''}`}>
         <span className={styles.exploreDivider}>or</span>
         <button
           className={styles.exploreButton}

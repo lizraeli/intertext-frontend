@@ -2,6 +2,12 @@ import { useState, useEffect, type CSSProperties } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import Markdown from 'react-markdown';
 import { fetchSegment, fetchSimilarSegments } from '../../api/segments';
+import {
+  isOnShelf,
+  addToShelf,
+  removeFromShelf,
+  updateShelfProgress,
+} from '../../shelf/shelfStorage';
 import { getMoodColor } from '../../utils/moodColors';
 import type { FullSegment, SimilarSegmentPreview } from '../../types/segments';
 import { LoadingIndicator } from '../../components/LoadingIndicator/LoadingIndicator';
@@ -29,6 +35,7 @@ export function ReadingScreen() {
   const [nextOptions, setNextOptions] = useState<SimilarSegmentPreview[]>([]);
   const [error, setError] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [onShelf, setOnShelf] = useState(false);
 
   const scrollThreshold = 60;
 
@@ -62,6 +69,8 @@ export function ReadingScreen() {
       try {
         const data = await fetchSegment(Number(id));
         setSegment(data);
+        setOnShelf(isOnShelf(data.novel_id));
+        updateShelfProgress(data);
         setTimeout(() => setPhase('reading'), 600);
       } catch {
         setError(true);
@@ -106,6 +115,16 @@ export function ReadingScreen() {
     navigateToSegmentById(segment.next_segment_id, routeState, true);
   }
 
+  function toggleShelf() {
+    if (!segment) return;
+    if (onShelf) {
+      removeFromShelf(segment.novel_id);
+    } else {
+      addToShelf(segment);
+    }
+    setOnShelf(!onShelf);
+  }
+
   const backTarget = getBackTarget({ segment, fromNovel, fromExplore });
 
   function navigateToBackTarget() {
@@ -144,6 +163,8 @@ export function ReadingScreen() {
         scrolled={scrolled}
         backLabel={backTarget.label}
         onNavigateBack={navigateToBackTarget}
+        onShelf={onShelf}
+        onToggleShelf={toggleShelf}
       />
 
       {/* Main content */}
