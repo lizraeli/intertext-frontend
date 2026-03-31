@@ -116,7 +116,7 @@
 }
 
 .bookmarkButton.bookmarkActive {
-  color: var(--amber);
+  color: var(--muted);
 }
 
 .bookmarkButton.bookmarkActive:hover {
