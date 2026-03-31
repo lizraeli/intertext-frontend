@@ -9,6 +9,7 @@ import TopBar from './components/TopBar';
 import NovelInfoBadge from './components/NovelInfoBadge';
 import SceneMeta from './components/SceneMeta';
 import SequentialNav from './components/SequentialNav';
+import SimilarPassages from './components/SimilarPassages';
 import { getBackTarget, type ReadingLocationState } from './utils';
 import styles from './ReadingScreen.module.css';
 
@@ -200,36 +201,10 @@ export function ReadingScreen() {
 
         {/* Where next? options */}
         {phase === 'choosing' && (
-          <div className={styles.similarPassagesSection}>
-            <div className={styles.similarPassagesHeading}>
-              Similar passages
-            </div>
-            <div className={styles.similarPassagesOptions}>
-              {nextOptions.map((opt, i) => {
-                const optMoodColor = getMoodColor(opt.mood);
-                return (
-                  <div
-                    key={opt.id}
-                    className={styles.similarPassage}
-                    style={
-                      {
-                        animationDelay: `${i * 0.12}s`,
-                        '--accent': optMoodColor,
-                      } as CSSProperties
-                    }
-                    onClick={() => navigateToSimilarSegment(opt)}
-                  >
-                    <div className={styles.similarPassageOpeningLine}>
-                      <Markdown>{opt.opening_line}</Markdown>
-                    </div>
-                    <div className={styles.similarPassageDetail}>
-                      {opt.mood} · {opt.novel_title} · {opt.author}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+          <SimilarPassages
+            options={nextOptions}
+            onNavigateToSimilarSegment={navigateToSimilarSegment}
+          />
         )}
       </div>
     </div>
