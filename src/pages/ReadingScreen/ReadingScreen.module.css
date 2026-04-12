@@ -450,3 +450,13 @@
   letter-spacing: 0.2em;
   text-transform: uppercase;
 }
+
+/* Word-level audio highlight */
+
+.wordActive {
+  background: rgba(232, 193, 112, 0.15);
+  border-radius: 2px;
+  padding: 1px 0;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
