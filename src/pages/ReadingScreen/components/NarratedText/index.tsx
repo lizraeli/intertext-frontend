@@ -1,4 +1,6 @@
 import {
+  createContext,
+  useContext,
   useMemo,
   Children,
   isValidElement,
@@ -9,6 +11,8 @@ import Markdown from 'react-markdown';
 import type { WordTiming } from '../../../../types/segments';
 import styles from '../../ReadingScreen.module.css';
 import { charsMatch, findActiveWordIndex, findTimingForChar } from './utils';
+
+const ActiveWordContext = createContext(-1);
 
 interface NarratedTextProps {
   content: string;
@@ -36,16 +40,19 @@ export function NarratedText({
                 rawText: content,
                 rawPosition: { current: 0 },
                 timings: wordTimings,
-                activeIndex,
               })
             : children}
         </p>
       ),
     }),
-    [content, wordTimings, activeIndex],
+    [content, wordTimings],
   );
 
-  return <Markdown components={components}>{content}</Markdown>;
+  return (
+    <ActiveWordContext.Provider value={activeIndex}>
+      <Markdown components={components}>{content}</Markdown>
+    </ActiveWordContext.Provider>
+  );
 }
 
 /**
@@ -57,7 +64,6 @@ function wrapChildren({
   rawText,
   rawPosition,
   timings,
-  activeIndex,
 }: {
   /** React children produced by react-markdown */
   children: ReactNode;
@@ -70,8 +76,6 @@ function wrapChildren({
   rawPosition: { current: number };
   /** Word timings for this paragraph (paragraph-relative char offsets) */
   timings: WordTiming[];
-  /** Index of the currently spoken word, or -1 */
-  activeIndex: number;
 }): ReactNode {
   return Children.map(children, (child) => {
     if (typeof child === 'string') {
@@ -80,7 +84,6 @@ function wrapChildren({
         rawText,
         rawPosition,
         timings,
-        activeIndex,
       });
     }
 
@@ -95,7 +98,6 @@ function wrapChildren({
             rawText,
             rawPosition,
             timings,
-            activeIndex,
           }),
         );
       }
@@ -115,7 +117,6 @@ function wrapTextNode({
   rawText,
   rawPosition,
   timings,
-  activeIndex,
 }: {
   /** The rendered text content of this React text node */
   text: string;
@@ -125,8 +126,6 @@ function wrapTextNode({
   rawPosition: { current: number };
   /** Word timings for this paragraph (paragraph-relative char offsets) */
   timings: WordTiming[];
-  /** Index of the currently spoken word, or -1 */
-  activeIndex: number;
 }): ReactNode[] {
   const elements: ReactNode[] = [];
   let segmentStart = 0;
@@ -149,7 +148,6 @@ function wrapTextNode({
           makeSegment({
             text: text.slice(segmentStart, i),
             timingIndex: currentTimingIndex,
-            activeIndex,
             key: segmentStart,
           }),
         );
@@ -173,7 +171,6 @@ function wrapTextNode({
           makeSegment({
             text: text.slice(segmentStart, i),
             timingIndex: currentTimingIndex,
-            activeIndex,
             key: segmentStart,
           }),
         );
@@ -188,7 +185,6 @@ function wrapTextNode({
       makeSegment({
         text: text.slice(segmentStart),
         timingIndex: currentTimingIndex,
-        activeIndex,
         key: segmentStart,
       }),
     );
@@ -200,24 +196,31 @@ function wrapTextNode({
 function makeSegment({
   text,
   timingIndex,
-  activeIndex,
   key,
 }: {
   text: string;
   timingIndex: number;
-  activeIndex: number;
   key: number;
 }): ReactNode {
   if (timingIndex < 0) {
     return text;
   }
 
-  return (
-    <span
-      key={key}
-      className={timingIndex === activeIndex ? styles.wordActive : undefined}
-    >
-      {text}
-    </span>
-  );
+  return <WordSpan key={key} timingIndex={timingIndex}>{text}</WordSpan>;
+}
+
+function WordSpan({
+  timingIndex,
+  children,
+}: {
+  timingIndex: number;
+  children: ReactNode;
+}) {
+  const activeIndex = useContext(ActiveWordContext);
+  const className =
+    timingIndex === activeIndex
+      ? `${styles.wordTimed} ${styles.wordActive}`
+      : styles.wordTimed;
+
+  return <span className={className}>{children}</span>;
 }
