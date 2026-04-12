@@ -1,4 +1,4 @@
-import { useState, useEffect, type CSSProperties } from 'react';
+import { useState, useEffect, useMemo, type CSSProperties } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import Markdown from 'react-markdown';
 import { fetchSegment, fetchSimilarSegments } from '../../api/segments';
@@ -11,8 +11,11 @@ import {
 import { getMoodColor } from '../../utils/moodColors';
 import type { FullSegment, SimilarSegmentPreview } from '../../types/segments';
 import { LoadingIndicator } from '../../components/LoadingIndicator/LoadingIndicator';
+import { useAudioPlayer } from '../../hooks/useAudioPlayer';
 import TopBar from './components/TopBar';
 import NovelInfoBadge from './components/NovelInfoBadge';
+import { NarratedText } from './components/NarratedText';
+import { splitTimingsByParagraph } from './components/NarratedText/utils';
 import SceneMeta from './components/SceneMeta';
 import SequentialNav from './components/SequentialNav';
 import SimilarPassages from './components/SimilarPassages';
@@ -37,6 +40,26 @@ export function ReadingScreen() {
   const [scrolled, setScrolled] = useState(false);
   const [onShelf, setOnShelf] = useState(false);
   const [hasLoaded, setHasLoaded] = useState(false);
+
+  const hasAudio = segment?.audio_url != null;
+
+  const { isPlaying, isBuffering, currentTimeMs, toggle: toggleAudio } =
+    useAudioPlayer({
+      audioUrl: segment?.audio_url ?? null,
+      startMs: segment?.audio_start_ms ?? null,
+      endMs: segment?.audio_end_ms ?? null,
+    });
+
+  const paragraphTimings = useMemo(
+    () =>
+      segment
+        ? splitTimingsByParagraph({
+            content: segment.content,
+            wordTimings: segment.word_timings,
+          })
+        : [],
+    [segment],
+  );
 
   const scrollThreshold = 60;
 
@@ -189,6 +212,9 @@ export function ReadingScreen() {
         onNavigateBack={navigateToBackTarget}
         onShelf={onShelf}
         onToggleShelf={toggleShelf}
+        isPlaying={hasAudio ? isPlaying : undefined}
+        isBuffering={hasAudio ? isBuffering : undefined}
+        onToggleAudio={hasAudio ? toggleAudio : undefined}
       />
 
       {/* Main content */}
@@ -206,7 +232,15 @@ export function ReadingScreen() {
         >
           {segment.content.split('\n\n').map((para, i) => (
             <div key={i} className={styles.paragraph}>
-              <Markdown>{para}</Markdown>
+              {hasAudio ? (
+                <NarratedText
+                  content={para}
+                  wordTimings={paragraphTimings[i] ?? []}
+                  currentTimeMs={currentTimeMs}
+                />
+              ) : (
+                <Markdown>{para}</Markdown>
+              )}
             </div>
           ))}
         </div>

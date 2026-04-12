@@ -9,6 +9,9 @@ type TopBarProps = {
   onNavigateBack: () => void;
   onShelf: boolean;
   onToggleShelf: () => void;
+  isPlaying?: boolean;
+  isBuffering?: boolean;
+  onToggleAudio?: () => void;
 };
 
 export default function TopBar({
@@ -18,6 +21,9 @@ export default function TopBar({
   onNavigateBack,
   onShelf,
   onToggleShelf,
+  isPlaying,
+  isBuffering,
+  onToggleAudio,
 }: TopBarProps) {
   const navigate = useNavigate();
 
@@ -29,6 +35,16 @@ export default function TopBar({
         {backLabel}
       </button>
       <div className={styles.topBarActions}>
+        {onToggleAudio && (
+          <button
+            className={`${styles.audioButton} ${isBuffering ? styles.audioBuffering : ''}`}
+            onClick={onToggleAudio}
+            aria-label={isPlaying ? 'Pause narration' : 'Play narration'}
+            title={isPlaying ? 'Pause narration' : 'Play narration'}
+          >
+            {isPlaying ? <PauseCircleIcon /> : <PlayCircleIcon />}
+          </button>
+        )}
         <button
           className={`${styles.bookmarkButton} ${onShelf ? styles.bookmarkActive : ''}`}
           onClick={onToggleShelf}
@@ -42,6 +58,47 @@ export default function TopBar({
         </button>
       </div>
     </div>
+  );
+}
+
+function PlayCircleIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <circle cx="12" cy="12" r="10" />
+      <polygon points="10,8 16,12 10,16" />
+    </svg>
+  );
+}
+
+function PauseCircleIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <circle cx="12" cy="12" r="10" />
+      <line x1="10" y1="9" x2="10" y2="15" />
+      <line x1="14" y1="9" x2="14" y2="15" />
+    </svg>
   );
 }
 
