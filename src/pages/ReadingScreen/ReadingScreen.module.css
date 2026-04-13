@@ -148,16 +148,18 @@
 }
 
 .badge {
+  width: 100%;
   display: inline-flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 20px;
   padding: 8px 16px;
 }
 
 .badgeText {
   display: flex;
-  align-items: center;
-  gap: 12px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
 }
 
 .chapterProgressTrack {

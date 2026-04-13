@@ -25,11 +25,9 @@ export default function NovelInfoBadge({
           <span className={styles.badgeMood} style={{ color: moodColor }}>
             {segment.chapter_title}
           </span>
-          <span className={styles.badgeDot}>·</span>
           <span className={styles.badgeProgress}>
             {segment.segment_index} of {segment.chapter_segment_count}
           </span>
-          <span className={styles.badgeDot}>·</span>
           <span className={styles.badgeTitle}>{segment.novel_title}</span>
           <span className={styles.badgeAuthor}>
             {segment.author}
