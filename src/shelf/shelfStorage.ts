@@ -24,7 +24,7 @@ function isShelfData(value: unknown): value is ShelfData {
     typeof value === 'object' &&
     value !== null &&
     'entries' in value &&
-    Array.isArray((value as ShelfData).entries)
+    Array.isArray(value.entries)
   );
 }
 

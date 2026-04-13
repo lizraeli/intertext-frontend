@@ -43,6 +43,13 @@ export interface SimilarSegmentPreview {
   similarity_score: number;
 }
 
+export interface WordTiming {
+  char_start: number;
+  char_end: number;
+  start_ms: number;
+  end_ms: number;
+}
+
 export interface FullSegment {
   id: number;
   novel_id: number;
@@ -60,4 +67,9 @@ export interface FullSegment {
   next_segment_id: number | null;
   segment_index: number;
   chapter_segment_count: number;
+  audio_url: string | null;
+  audio_start_ms: number | null;
+  audio_end_ms: number | null;
+  audio_status: string | null;
+  word_timings: WordTiming[] | null;
 }

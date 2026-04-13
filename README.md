@@ -1,73 +1,72 @@
 # Intertext Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A literary exploration app built with React, TypeScript, and Vite. The app allows to browse novels, read segments, explore similar passages via embedding similarity, and listen to narrated audio with word-level highlighting.
 
-Currently, two official plugins are available:
+## Setup
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+The dev server starts at `http://localhost:5173` by default.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Environment
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Create a `.env` file (optional):
+
+- `VITE_API_URL` — backend API base URL (defaults to `http://localhost:8000`)
+
+## Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start Vite dev server with HMR |
+| `npm run build` | Type-check and build for production |
+| `npm run preview` | Preview the production build |
+| `npm run lint` | Run ESLint |
+| `npm test` | Run tests with Vitest |
+
+## Pages
+
+| Route | Page | Description |
+|-------|------|-------------|
+| `/` | HomePage | Landing page with novel listing and personal reading shelf |
+| `/explore` | OpeningScreen | Random segment previews with mood-colored cards |
+| `/novel/:id` | NovelScreen | Chapter listing for a novel |
+| `/segment/:id` | ReadingScreen | Full segment reading view with navigation, audio narration, and similar passages |
+
+## Audio Narration
+
+When a segment has audio data from the backend, the ReadingScreen displays a play/pause button in the top bar. During playback, the currently spoken word is highlighted with a warm amber background that fades out smoothly as narration advances.
+
+Key pieces:
+- `useAudioPlayer` hook — manages audio playback state, buffering, and time tracking via `requestAnimationFrame`
+- `NarratedText` component — renders markdown with word-level `<span>` wrappers, using `ActiveWordContext` so that only the active word re-renders (preserving CSS transitions)
+- `splitTimingsByParagraph` — converts segment-level word timings to per-paragraph offsets
+
+## Project Structure
+
 ```
+src/
+  api/              API client (segments, novels)
+  components/       Shared UI (GrainOverlay, LoadingIndicator)
+  hooks/            Custom hooks (useAudioPlayer)
+  pages/            Route screens, each with co-located CSS module
+    HomePage/
+    OpeningScreen/
+    NovelScreen/
+    ReadingScreen/
+      components/     TopBar, NovelInfoBadge, NarratedText, etc.
+  shelf/            Local storage reading shelf persistence
+  types/            TypeScript interfaces (segments, novels)
+  utils/            Mood colors
+```
+
+## Stack
+
+- **React**, **TypeScript**, **Vite**
+- **React Router 7** for client-side routing
+- **react-markdown** for rendering segment content
+- **CSS Modules** for scoped styling
+- **Vitest**, **Testing Library** for tests
