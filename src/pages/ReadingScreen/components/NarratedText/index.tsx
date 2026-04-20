@@ -6,6 +6,8 @@ import {
   isValidElement,
   cloneElement,
   type ReactNode,
+  useRef,
+  useEffect,
 } from 'react';
 import Markdown from 'react-markdown';
 import type { WordTiming } from '../../../../types/segments';
@@ -25,6 +27,7 @@ export function NarratedText({
   wordTimings,
   currentTimeMs,
 }: NarratedTextProps) {
+  const activeWordRef = useRef<HTMLSpanElement>(null);
   const activeIndex = useMemo(
     () => findActiveWordIndex({ timings: wordTimings, currentTimeMs }),
     [wordTimings, currentTimeMs],
@@ -40,6 +43,7 @@ export function NarratedText({
                 rawText: content,
                 rawPosition: { current: 0 },
                 timings: wordTimings,
+                activeWordRef,
               })
             : children}
         </p>
@@ -47,6 +51,15 @@ export function NarratedText({
     }),
     [content, wordTimings],
   );
+
+  useEffect(() => {
+    if (activeWordRef.current) {
+      activeWordRef.current.scrollIntoView({
+        block: 'center',
+        behavior: 'smooth',
+      });
+    }
+  }, [activeIndex]);
 
   return (
     <ActiveWordContext.Provider value={activeIndex}>
@@ -64,6 +77,7 @@ function wrapChildren({
   rawText,
   rawPosition,
   timings,
+  activeWordRef,
 }: {
   /** React children produced by react-markdown */
   children: ReactNode;
@@ -76,6 +90,8 @@ function wrapChildren({
   rawPosition: { current: number };
   /** Word timings for this paragraph (paragraph-relative char offsets) */
   timings: WordTiming[];
+  /** Ref to the active word span */
+  activeWordRef: React.RefObject<HTMLSpanElement | null>;
 }): ReactNode {
   return Children.map(children, (child) => {
     if (typeof child === 'string') {
@@ -84,6 +100,7 @@ function wrapChildren({
         rawText,
         rawPosition,
         timings,
+        activeWordRef,
       });
     }
 
@@ -98,6 +115,7 @@ function wrapChildren({
             rawText,
             rawPosition,
             timings,
+            activeWordRef,
           }),
         );
       }
@@ -117,6 +135,7 @@ function wrapTextNode({
   rawText,
   rawPosition,
   timings,
+  activeWordRef,
 }: {
   /** The rendered text content of this React text node */
   text: string;
@@ -126,6 +145,8 @@ function wrapTextNode({
   rawPosition: { current: number };
   /** Word timings for this paragraph (paragraph-relative char offsets) */
   timings: WordTiming[];
+  /** Ref to the active word span */
+  activeWordRef: React.RefObject<HTMLSpanElement | null>;
 }): ReactNode[] {
   const elements: ReactNode[] = [];
   let segmentStart = 0;
@@ -149,6 +170,7 @@ function wrapTextNode({
             text: text.slice(segmentStart, i),
             timingIndex: currentTimingIndex,
             key: segmentStart,
+            activeWordRef,
           }),
         );
       }
@@ -172,6 +194,7 @@ function wrapTextNode({
             text: text.slice(segmentStart, i),
             timingIndex: currentTimingIndex,
             key: segmentStart,
+            activeWordRef,
           }),
         );
       }
@@ -186,6 +209,7 @@ function wrapTextNode({
         text: text.slice(segmentStart),
         timingIndex: currentTimingIndex,
         key: segmentStart,
+        activeWordRef,
       }),
     );
   }
@@ -197,30 +221,42 @@ function makeSegment({
   text,
   timingIndex,
   key,
+  activeWordRef,
 }: {
   text: string;
   timingIndex: number;
   key: number;
+  activeWordRef: React.RefObject<HTMLSpanElement | null>;
 }): ReactNode {
   if (timingIndex < 0) {
     return text;
   }
 
-  return <WordSpan key={key} timingIndex={timingIndex}>{text}</WordSpan>;
+  return (
+    <WordSpan key={key} timingIndex={timingIndex} activeWordRef={activeWordRef}>
+      {text}
+    </WordSpan>
+  );
 }
 
 function WordSpan({
   timingIndex,
   children,
+  activeWordRef,
 }: {
   timingIndex: number;
   children: ReactNode;
+  activeWordRef: React.RefObject<HTMLSpanElement | null>;
 }) {
   const activeIndex = useContext(ActiveWordContext);
-  const className =
-    timingIndex === activeIndex
-      ? `${styles.wordTimed} ${styles.wordActive}`
-      : styles.wordTimed;
+  const isActiveWord = timingIndex === activeIndex;
+  const className = isActiveWord
+    ? `${styles.wordTimed} ${styles.wordActive}`
+    : styles.wordTimed;
 
-  return <span className={className}>{children}</span>;
+  return (
+    <span className={className} ref={isActiveWord ? activeWordRef : undefined}>
+      {children}
+    </span>
+  );
 }
