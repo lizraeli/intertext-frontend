@@ -12,7 +12,12 @@ import {
 import Markdown from 'react-markdown';
 import type { WordTiming } from '../../../../types/segments';
 import styles from '../../ReadingScreen.module.css';
-import { charsMatch, findActiveWordIndex, findTimingForChar } from './utils';
+import {
+  charsMatch,
+  findActiveWordIndex,
+  findTimingForChar,
+  isInViewport,
+} from './utils';
 
 const ActiveWordContext = createContext(-1);
 
@@ -53,8 +58,13 @@ export function NarratedText({
   );
 
   useEffect(() => {
-    if (activeWordRef.current) {
-      activeWordRef.current.scrollIntoView({
+    const activeWordElem = activeWordRef.current;
+    if (!activeWordElem) {
+      return;
+    }
+
+    if (!isInViewport(activeWordElem)) {
+      activeWordElem.scrollIntoView({
         block: 'center',
         behavior: 'smooth',
       });
