@@ -43,12 +43,17 @@ export function ReadingScreen() {
 
   const hasAudio = segment?.audio_url != null;
 
-  const { isPlaying, isBuffering, currentTimeMs, toggle: toggleAudio } =
-    useAudioPlayer({
-      audioUrl: segment?.audio_url ?? null,
-      startMs: segment?.audio_start_ms ?? null,
-      endMs: segment?.audio_end_ms ?? null,
-    });
+  const {
+    isPlaying,
+    isBuffering,
+    currentTimeMs,
+    toggle: toggleAudio,
+    pause: pauseAudio,
+  } = useAudioPlayer({
+    audioUrl: segment?.audio_url ?? null,
+    startMs: segment?.audio_start_ms ?? null,
+    endMs: segment?.audio_end_ms ?? null,
+  });
 
   const paragraphTimings = useMemo(
     () =>
@@ -135,6 +140,7 @@ export function ReadingScreen() {
       state: params.state,
       viewTransition: params.viewTransition,
     });
+    pauseAudio();
     scrollToTop();
   }
 

@@ -26,6 +26,40 @@ export function useAudioPlayer({
   const [isBuffering, setIsBuffering] = useState(false);
   const [currentTimeMs, setCurrentTimeMs] = useState(0);
 
+  const play = useCallback(() => {
+    const audio = audioRef.current;
+    if (!audio) {
+      return;
+    }
+
+    if (startMs != null) {
+      const currentMs = audio.currentTime * 1000;
+      if (currentMs < startMs || (endMs != null && currentMs >= endMs)) {
+        audio.currentTime = startMs / 1000;
+      }
+    }
+
+    audio.play().then(() => setIsPlaying(true));
+  }, [endMs, startMs]);
+
+  const pause = useCallback(() => {
+    const audio = audioRef.current;
+    if (!audio) {
+      return;
+    }
+
+    audio.pause();
+    setIsPlaying(false);
+  }, []);
+
+  const toggle = useCallback(() => {
+    if (isPlaying) {
+      pause();
+    } else {
+      play();
+    }
+  }, [isPlaying, play, pause]);
+
   useEffect(() => {
     if (!audioUrl) {
       return;
@@ -67,17 +101,16 @@ export function useAudioPlayer({
         return;
       }
 
-      const ms = audio.currentTime * 1000;
+      const currentMs = audio.currentTime * 1000;
 
-      if (endMs != null && ms >= endMs) {
-        audio.pause();
-        setIsPlaying(false);
+      if (endMs != null && currentMs >= endMs) {
+        pause();
         return;
       }
 
-      if (Math.abs(ms - prevMs) > 16) {
-        setCurrentTimeMs(ms);
-        prevMs = ms;
+      if (Math.abs(currentMs - prevMs) > 16) {
+        setCurrentTimeMs(currentMs);
+        prevMs = currentMs;
       }
 
       rafRef.current = requestAnimationFrame(tick);
@@ -86,32 +119,7 @@ export function useAudioPlayer({
     rafRef.current = requestAnimationFrame(tick);
 
     return () => cancelAnimationFrame(rafRef.current);
-  }, [isPlaying, endMs]);
-
-  const toggle = useCallback(() => {
-    const audio = audioRef.current;
-    if (!audio) {
-      return;
-    }
-
-    if (isPlaying) {
-      audio.pause();
-      setIsPlaying(false);
-    } else {
-      if (startMs != null) {
-        const currentMs = audio.currentTime * 1000;
-        if (currentMs < (startMs ?? 0) || (endMs != null && currentMs >= endMs)) {
-          audio.currentTime = startMs / 1000;
-        }
-      }
-      audio.play().then(() => setIsPlaying(true));
-    }
-  }, [isPlaying, startMs, endMs]);
-
-  const pause = useCallback(() => {
-    audioRef.current?.pause();
-    setIsPlaying(false);
-  }, []);
+  }, [isPlaying, endMs, pause]);
 
   return { isPlaying, isBuffering, currentTimeMs, toggle, pause };
 }
