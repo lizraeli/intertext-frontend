@@ -39,7 +39,6 @@ export function ReadingScreen() {
   const [error, setError] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [onShelf, setOnShelf] = useState(false);
-  const [hasLoaded, setHasLoaded] = useState(false);
 
   const hasAudio = segment?.audio_url != null;
 
@@ -86,8 +85,6 @@ export function ReadingScreen() {
   }, []);
 
   useEffect(() => {
-    let timeoutId: ReturnType<typeof setTimeout>;
-
     async function handleFetchSegment() {
       if (!id) {
         return;
@@ -103,21 +100,14 @@ export function ReadingScreen() {
         setOnShelf(isOnShelf(data.novel_id));
         updateShelfProgress(data);
 
-        if (!hasLoaded) {
-          timeoutId = setTimeout(() => setPhase('reading'), 100);
-          setHasLoaded(true);
-        } else {
-          setPhase('reading');
-        }
+        setPhase('reading');
       } catch {
         setError(true);
       }
     }
 
     handleFetchSegment();
-
-    return () => clearTimeout(timeoutId);
-  }, [id, hasLoaded]);
+  }, [id]);
 
   async function handleReveal() {
     if (!segment) return;
@@ -212,7 +202,7 @@ export function ReadingScreen() {
   return (
     <div className={styles.container}>
       <TopBar
-        isVisible={isVisible || hasLoaded}
+        isVisible={true}
         scrolled={scrolled}
         backLabel={backTarget.label}
         onNavigateBack={navigateToBackTarget}
@@ -228,7 +218,7 @@ export function ReadingScreen() {
         <NovelInfoBadge
           segment={segment}
           moodColor={moodColor}
-          isVisible={isVisible || hasLoaded}
+          isVisible={true}
         />
 
         {/* Text body */}
