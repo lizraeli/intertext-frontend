@@ -123,7 +123,7 @@
 }
 
 .bookmarkButton.bookmarkActive {
-  color: var(--muted);
+  color: var(--amber);
 }
 
 .bookmarkButton.bookmarkActive:hover {
