@@ -21,6 +21,10 @@
   transition:
     opacity 0.8s ease 0.3s,
     padding 0.25s ease;
+
+  @media (max-width: 768px) {
+    padding: 16px 20px;
+  }
 }
 
 .topBar.visible {
@@ -31,6 +35,9 @@
   padding: 10px 40px;
   border-bottom: none;
   box-shadow: 0 0.5px 4px rgba(255, 255, 255, 0.08);
+  @media (max-width: 768px) {
+    padding: 10px 20px;
+  }
 }
 
 .backButton {
