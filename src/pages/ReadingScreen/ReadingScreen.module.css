@@ -343,7 +343,7 @@
 .ctaButton {
   --accent: var(--amber);
   background: none;
-  border: 1px solid var(--border);
+  border: 1px outset var(--border);
   color: var(--muted);
   cursor: pointer;
   padding: 18px 36px;
@@ -355,7 +355,6 @@
 }
 
 .ctaButton:hover {
-  border-color: var(--accent);
   color: var(--accent);
 }
 
@@ -365,7 +364,6 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  border: 1px solid var(--border);
   padding: 18px 36px;
   min-width: 200px;
 }
