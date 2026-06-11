@@ -25,7 +25,7 @@ export function getBackTarget({
   if (fromNovel) {
     return {
       path: `/novel/${fromNovel}`,
-      label: `← Table of Contents`,
+      label: `← Chapters`,
     };
   }
 
